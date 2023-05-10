@@ -1,7 +1,18 @@
-# Caddy + Cloudflare
+# Caddy
 ![](https://img.shields.io/badge/-%%CADDY_VERSION%%-informational)
-[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/hyqo/caddy)](https://hub.docker.com/r/hyqo/caddy)
-[![Docker Image Size (latest semver)](https://img.shields.io/docker/pulls/hyqo/caddy)](https://hub.docker.com/r/hyqo/caddy)
-[![build](https://github.com/hyqo/docker-nginx-acme.sh/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/hyqo/docker-caddy/actions/workflows/build.yml)
+[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/akeylimepie/caddy)](https://hub.docker.com/r/akeylimepie/caddy)
+[![Docker Image Size (latest semver)](https://img.shields.io/docker/pulls/akeylimepie/caddy)](https://hub.docker.com/r/akeylimepie/caddy)
+[![build](https://github.com/akeylimepie/docker-caddy/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/akeylimepie/docker-caddy/actions/workflows/build.yml)
 
 arch: linux/amd64, linux/arm64
+
+```
+docker pull akeylimepie/caddy:latest
+docker pull akeylimepie/caddy:2.6
+docker pull akeylimepie/caddy:2.6.4
+```
+
+Includes:
+* [github.com/caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)
+* [github.com/dunglas/mercure](https://github.com/dunglas/mercure)
+* [github.com/dunglas/mercure/caddy](https://github.com/dunglas/mercure/caddy)
