@@ -14,5 +14,3 @@ docker pull %%IMAGE%%:%%LATEST_PATCH%%
 
 Includes:
 * [github.com/caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)
-* [github.com/dunglas/mercure](https://github.com/dunglas/mercure)
-* [github.com/dunglas/mercure/caddy](https://github.com/dunglas/mercure/caddy)
