@@ -9,10 +9,8 @@ arch: linux/amd64, linux/arm64
 ```
 docker pull akeylimepie/caddy:latest
 docker pull akeylimepie/caddy:2.7
-docker pull akeylimepie/caddy:2.7.2
+docker pull akeylimepie/caddy:2.7.4
 ```
 
 Includes:
 * [github.com/caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)
-* [github.com/dunglas/mercure](https://github.com/dunglas/mercure)
-* [github.com/dunglas/mercure/caddy](https://github.com/dunglas/mercure/caddy)
