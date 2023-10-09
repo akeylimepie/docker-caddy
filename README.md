@@ -14,3 +14,4 @@ docker pull akeylimepie/caddy:2.7.4
 
 Includes:
 * [github.com/caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)
+* [github.com/lucaslorentz/caddy-docker-proxy](https://github.com/lucaslorentz/caddy-docker-proxy)
