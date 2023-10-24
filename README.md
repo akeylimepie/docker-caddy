@@ -1,4 +1,5 @@
 # Caddy
+
 ![](https://img.shields.io/badge/-%%CADDY_VERSION%%-informational)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/akeylimepie/caddy)](https://hub.docker.com/r/akeylimepie/caddy)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/pulls/akeylimepie/caddy)](https://hub.docker.com/r/akeylimepie/caddy)
@@ -13,5 +14,5 @@ docker pull akeylimepie/caddy:2.7.5
 ```
 
 Includes:
+
 * [github.com/caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)
-* [github.com/lucaslorentz/caddy-docker-proxy](https://github.com/lucaslorentz/caddy-docker-proxy)
