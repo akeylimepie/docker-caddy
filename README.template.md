@@ -1,4 +1,5 @@
 # Caddy
+
 ![](https://img.shields.io/badge/-%%CADDY_VERSION%%-informational)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/%%IMAGE%%)](https://hub.docker.com/r/%%IMAGE%%)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/pulls/%%IMAGE%%)](https://hub.docker.com/r/%%IMAGE%%)
@@ -13,5 +14,5 @@ docker pull %%IMAGE%%:%%LATEST_PATCH%%
 ```
 
 Includes:
+
 * [github.com/caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)
-* [github.com/lucaslorentz/caddy-docker-proxy](https://github.com/lucaslorentz/caddy-docker-proxy)
