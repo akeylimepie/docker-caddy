@@ -9,8 +9,8 @@ arch: linux/amd64, linux/arm64
 
 ```
 docker pull akeylimepie/caddy:latest
-docker pull akeylimepie/caddy:2.8
-docker pull akeylimepie/caddy:2.8.4
+docker pull akeylimepie/caddy:2.9
+docker pull akeylimepie/caddy:2.9.1
 ```
 
 Includes:
