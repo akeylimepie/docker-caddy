@@ -1,0 +1,101 @@
+name: watch caddy
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+      - .keepalive
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+env:
+  IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/caddy
+  REFRESH_DAYS: 7
+
+jobs:
+  resolve-version:
+    runs-on: ubuntu-latest
+    outputs:
+      caddy_version: ${{ steps.latest.outputs.version }}
+      should_build: ${{ steps.decide.outputs.should_build }}
+    steps:
+      - name: Resolve latest Caddy version
+        id: latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(gh api repos/caddyserver/caddy/releases/latest --jq .tag_name)
+          version="${version#v}"
+
+          [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::unexpected release tag: $version"; exit 1; }
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Decide whether to build
+        id: decide
+        env:
+          VERSION: ${{ steps.latest.outputs.version }}
+          FORCE: ${{ github.event_name != 'schedule' }}
+        run: |
+          set -euo pipefail
+
+          hub() { curl -sS -f "https://hub.docker.com/v2/repositories/$1"; }
+          epoch() { date -u -d "${1%%.*}Z" +%s; }
+          stamp() { jq -r .last_updated <<<"$1"; }
+
+          if [[ $FORCE == true ]]; then
+            reason='manual run or repo change'; should=true
+
+          elif ! base=$(hub "library/caddy/tags/$VERSION-alpine") \
+            || ! builder=$(hub "library/caddy/tags/$VERSION-builder-alpine"); then
+            reason="official caddy:$VERSION images are not published yet"; should=false
+
+          elif ! ours=$(hub "$IMAGE/tags/$VERSION"); then
+            reason="new version $VERSION"; should=true
+
+          else
+            ours_at=$(epoch "$(stamp "$ours")")
+            base_at=$(epoch "$(stamp "$base")")
+            builder_at=$(epoch "$(stamp "$builder")")
+            upstream_at=$(( base_at > builder_at ? base_at : builder_at ))
+            age_days=$(( ($(date -u +%s) - ours_at) / 86400 ))
+
+            if (( upstream_at > ours_at )); then
+              reason="official image rebuilt $(( (upstream_at - ours_at) / 86400 ))d after ours"; should=true
+            elif (( age_days >= REFRESH_DAYS )); then
+              reason="weekly refresh (${age_days}d old)"; should=true
+            else
+              reason="up to date (${age_days}d old)"; should=false
+            fi
+          fi
+
+          echo "should_build=$should" >> "$GITHUB_OUTPUT"
+          echo "$VERSION: $reason -> build=$should" >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    needs: [ resolve-version ]
+    if: needs.resolve-version.outputs.should_build == 'true'
+    uses: ./.github/workflows/build.yml
+    with:
+      caddy_version: ${{ needs.resolve-version.outputs.caddy_version }}
+    secrets: inherit
+
+  keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Refresh keepalive marker
+        run: date -u +%Y-%m > .keepalive
+
+      - name: Commit keepalive marker
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Keep scheduled runs alive
+          file_pattern: .keepalive

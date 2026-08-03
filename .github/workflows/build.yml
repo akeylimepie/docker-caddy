@@ -1,23 +1,28 @@
 name: build
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      caddy_version:
+        required: true
+        type: string
+
+concurrency:
+  group: build-${{ inputs.caddy_version }}
+  cancel-in-progress: false
 
 env:
   IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/caddy
-  CADDY_MINOR: 2.11
-  CADDY_VERSION: 2.11.3
 
 jobs:
   build-image:
     runs-on: ubuntu-latest
+    env:
+      CADDY_VERSION: ${{ inputs.caddy_version }}
+    outputs:
+      caddy_minor: ${{ steps.version.outputs.minor }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -27,6 +32,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Resolve minor version
+        id: version
+        run: echo "minor=${CADDY_VERSION%.*}" >> "$GITHUB_OUTPUT"
 
       - name: Build base image
         uses: docker/build-push-action@v6
@@ -38,12 +47,17 @@ jobs:
             "CADDY_VERSION=${{ env.CADDY_VERSION }}"
           tags: |
             ${{ env.IMAGE }}:latest
-            ${{ env.IMAGE }}:${{ env.CADDY_MINOR }}
+            ${{ env.IMAGE }}:${{ steps.version.outputs.minor }}
             ${{ env.IMAGE }}:${{ env.CADDY_VERSION }}
 
   readme:
     needs: [ build-image ]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      CADDY_VERSION: ${{ inputs.caddy_version }}
+      CADDY_MINOR: ${{ needs.build-image.outputs.caddy_minor }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -53,6 +67,7 @@ jobs:
           README=$(<README.template.md)
           README="${README//%%IMAGE%%/$IMAGE}"
 
+          README="${README//%%CADDY_VERSION%%/$CADDY_VERSION}"
           README="${README//%%LATEST_MINOR%%/$CADDY_MINOR}"
           README="${README//%%LATEST_PATCH%%/$CADDY_VERSION}"
 
