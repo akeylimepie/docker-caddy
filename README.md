@@ -1,6 +1,6 @@
 # Caddy
 
-![](https://img.shields.io/badge/-2.11.7-informational)
+![](https://img.shields.io/badge/-2.11.9-informational)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/akeylimepie/caddy)](https://hub.docker.com/r/akeylimepie/caddy)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/pulls/akeylimepie/caddy)](https://hub.docker.com/r/akeylimepie/caddy)
 [![build](https://github.com/akeylimepie/docker-caddy/actions/workflows/watch-caddy.yml/badge.svg)](https://github.com/akeylimepie/docker-caddy/actions/workflows/watch-caddy.yml)
@@ -10,7 +10,7 @@ arch: linux/amd64, linux/arm64
 ```
 docker pull akeylimepie/caddy:latest
 docker pull akeylimepie/caddy:2.11
-docker pull akeylimepie/caddy:2.11.7
+docker pull akeylimepie/caddy:2.11.9
 ```
 
 Includes:
